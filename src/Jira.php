@@ -16,6 +16,7 @@ class Jira
     /** @var string $password */
     protected string $password;
 
+    //region internals
     public function __construct(string $baseurl, string $user, string $password)
     {
         $this->baseurl = $baseurl;
@@ -54,12 +55,23 @@ class Jira
     {
         return $this->_curl($this->baseurl . '/' . $endpoint, [
             CURLOPT_POST       => true,
-            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_POSTFIELDS => json_encode($data),
         ]);
     }
+
+    //endregion
 
     public function myself()
     {
         return $this->GET('myself');
+    }
+
+    public function addWorklog(string $issue, int $timeSpentSeconds, string $comment, int $timestamp = null): array
+    {
+        return $this->POST('issue/' . $issue . '/worklog', [
+            "comment"          => $comment,
+            "started"          => strftime('%FT%T.000+0200', $timestamp ?: time()),
+            "timeSpentSeconds" => $timeSpentSeconds,
+        ]);
     }
 }
