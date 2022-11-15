@@ -17,6 +17,7 @@ class Jira
     protected string $password;
 
     //region internals
+
     public function __construct(string $baseurl, string $user, string $password)
     {
         $this->baseurl = $baseurl;
@@ -65,10 +66,19 @@ class Jira
 
     //endregion
 
+    //region Endpoints
+
     public function myself(): array
     {
         return $this->GET('myself');
     }
+
+    public function search(array $parameter)
+    {
+        return $this->POST('search', $parameter);
+    }
+
+    //endregion
 
     public function addWorklog(string $issue, int $timeSpentSeconds, string $comment, int $timestamp = null): array
     {
